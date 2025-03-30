@@ -1,23 +1,28 @@
 {
     "manifest_version": 3,
-    "name": "Reddit Instant Block",
-    "description": "Add a block button next to usernames on Reddit.",
+    "name": "Reddit Blocker",
     "version": "1.0",
     "permissions": [
-        "activeTab",
+        "tabs",
         "storage"
     ],
+    "host_permissions": [
+        "https://www.reddit.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_title": "Reddit Blocker"
+    },
     "content_scripts": [
         {
             "matches": [
-                "https://www.reddit.com/*"
+                "*://www.reddit.com/*"
             ],
             "js": [
                 "content.js"
             ]
         }
-    ],
-    "action": {
-        "default_popup": "popup.html"
-    }
+    ]
 }

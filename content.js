@@ -1,3 +1,6 @@
+// Ensure you store the access token somewhere (e.g., localStorage, or chrome storage)
+const ACCESS_TOKEN = "your_access_token"; // Replace this with the actual access token
+
 function addBlockButton(userElement) {
     // Ensure we don't add multiple buttons to the same user
     if (userElement.parentNode.querySelector('.reddit-block-btn')) return;
@@ -22,12 +25,30 @@ function addBlockButton(userElement) {
     userElement.parentNode.appendChild(blockButton);
 }
 
-function blockUser(username) {
+async function blockUser(username) {
     console.log(`Blocking user: ${username}`);
 
-    // Open the user's Reddit profile where the block option is available
-    const blockUrl = `https://www.reddit.com/user/${username}/about/`;
-    window.open(blockUrl, '_blank');
+    try {
+        const response = await fetch('https://oauth.reddit.com/api/block', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${ACCESS_TOKEN}`, // Use your OAuth access token
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                name: username // Reddit username to block
+            })
+        });
+
+        if (response.ok) {
+            console.log(`Successfully blocked user: ${username}`);
+        } else {
+            const errorData = await response.json();
+            console.error('Error blocking user:', errorData);
+        }
+    } catch (error) {
+        console.error('Failed to block user:', error);
+    }
 }
 
 // Selectors for both post and comment authors
